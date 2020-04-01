@@ -77,12 +77,12 @@ WSGI_APPLICATION = 'BDProject.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': "cafe",
-        'USER': 'root',
-        'PASSWORD': 'ca88rusc',
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': "dd4aa4eb4shkk1",
+        'USER': 'spzvkmfmcmgefv',
+        'PASSWORD': '67549992a94d680a5e8f07c4fdf1230ec7594f0773ddf2290b24be89998b6bc2',
+        'HOST': 'ec2-46-137-84-173.eu-west-1.compute.amazonaws.com',
+        'PORT': '5432',
     }
 }
 
