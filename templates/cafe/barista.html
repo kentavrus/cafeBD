@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Barista
+{% endblock %}
+
+{% block content %}
+    {% if barista %}
+        <div class="card" style="width: 18rem">
+            <div class="card-body">
+                <h1 class="card-title">{{ barista.name }} {{ barista.surname }}</h1>
+                <p class="card-text">{{ barista.phone }}</p>
+                <p class="card-text">{{ barista.email }}</p>
+                <p class="card-text">{{ barista.notes }}</p>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
