@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Dishes
+{% endblock %}
+
+{% block content %}
+    {% if dishes %}
+        <div class="py-5">
+            <div class="container">
+                <div class="row">
+                    {% for dish in dishes %}
+                        <div class="col-sm">
+                            <div class="card mb-2" style="width: 18rem; height: 20rem">
+                                <div class="card-body">
+                                    <h1 class="card-title">{{ dish.name }}</h1>
+                                    <p class="card-text">{{ dish.description }}</p>
+                                    <p class="card-text">{{ dish.price_for_one }}</p>
+                                    <p class="card-text">{{ dish.notes }}</p>
+                                    <a href="{% url "cafe:dish_detail" dish.id %}"
+                                       class="btn btn-primary">Detail</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+    {% endif %}
+{% endblock %}
