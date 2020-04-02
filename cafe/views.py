@@ -1,7 +1,7 @@
 from django.http import Http404
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
-from .models import Barist, Dish
+from .models import Barist, Dish, Product, Invoice, User
 
 
 # Create your views here.
@@ -21,7 +21,7 @@ def barista_detail(request, barista_ipn):
 
 
 def index(request):
-    return render(request, 'cafe/index.html')
+    return render(request, 'index.html')
 
 
 def dishes(request):
@@ -54,3 +54,36 @@ def drinks(request):
     except:
         raise Http404("Drinks not found")
     return render(request, 'cafe/drink.html', {"drinks": drinks})
+
+
+def products(request):
+    try:
+        products = Product.objects.all()
+    except:
+        raise Http404("Products not found")
+    return render(request, 'cafe/products.html', {"products": products})
+
+
+def product_detail(request, product_id):
+    try:
+        product = Product.objects.get(id=product_id)
+    except:
+        raise Http404("Product not found")
+    return render(request, 'cafe/product.html', {"product": product})
+
+
+def login(request):
+    username = request.POST.get('login')
+    password = request.POST.get('password')
+    users = User.objects.all()
+    try:
+        user = User.objects.get(login=username, password=password)
+    except:
+        return render(request, 'cafe/login_failed.html')
+    role = user.role
+    if role == "barista":
+        return render(request, 'cafe/for_barisra.html')
+    elif role == "admin":
+        return render(request, 'cafe/for_admin.html')
+    elif role == "owner":
+        return redirect('/baristas/')

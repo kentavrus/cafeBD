@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Products
+{% endblock %}
+
+{% block content %}
+    {% if products %}
+        <div class="py-5">
+            <div class="container">
+                <div class="row">
+                    {% for product in products %}
+                        <div class="col-sm">
+                            <div class="card mb-2" style="width: 18rem; height: 20rem">
+                                <div class="card-body">
+                                    <h1 class="card-title">{{ product.name }}</h1>
+                                    <p class="card-text">{{ product.quantity }}</p>
+                                    <p class="card-text">{{ product.price_for_kg }}</p>
+                                    <p class="card-text">{{ product.notes }}</p>
+                                    <a href="{% url "cafe:product_detail" product.id %}"
+                                       class="btn btn-primary">Detail</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+    {% endif %}
+{% endblock %}
