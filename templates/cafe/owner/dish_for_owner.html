@@ -3,6 +3,9 @@
 {% block title %}
     {{ dish.name }}
 {% endblock %}
+{% block lists %}
+   {% include "cafe/owner/navigation_owner.html" %}
+{% endblock %}
 
 {% block content %}
     {% if dish %}

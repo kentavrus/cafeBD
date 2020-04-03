@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Baristas page
+{% endblock %}
+
+{% block lists %}
+    {% include "cafe/owner/navigation_owner.html" %}
+{% endblock %}
+
+{% block content %}
+    {% if baristas %}
+        <div class="py-5">
+            <div class="container">
+                <div class="row">
+                    {% for barista in baristas %}
+                        <div class="col-sm">
+                            <div class="card mb-2" style="width: 18rem; height: 20rem">
+                                <div class="card-body">
+                                    <h1 class="card-title">{{ barista.name }} {{ barista.surname }}</h1>
+                                    <p class="card-text">{{ barista.phone }}</p>
+                                    <p class="card-text">{{ barista.email }}</p>
+                                    <p class="card-text">{{ barista.notes }}</p>
+                                    <a href="{% url "cafe:barista_detail" barista.ipn %}"
+                                       class="btn btn-primary">Detail</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="text-center">
+            <a class="btn btn-primary" href="{% url "cafe:add_barist" %}">Add new barist</a>
+        </div>
+    {% endif %}
+{% endblock %}

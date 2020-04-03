@@ -1,23 +1,27 @@
 {% extends "base.html" %}
 
 {% block title %}
-    Products
+    Drinks page
+{% endblock %}
+
+{% block lists %}
+   {% include "cafe/owner/navigation_owner.html" %}
 {% endblock %}
 
 {% block content %}
-    {% if products %}
+    {% if drinks %}
         <div class="py-5">
             <div class="container">
                 <div class="row">
-                    {% for product in products %}
+                    {% for drink in drinks %}
                         <div class="col-sm">
                             <div class="card mb-2" style="width: 18rem; height: 20rem">
                                 <div class="card-body">
-                                    <h1 class="card-title">{{ product.name }}</h1>
-                                    <p class="card-text">{{ product.quantity }}</p>
-                                    <p class="card-text">{{ product.price_for_kg }}</p>
-                                    <p class="card-text">{{ product.notes }}</p>
-                                    <a href="{% url "cafe:product_detail" product.id %}"
+                                    <h1 class="card-title">{{ drink.name }}</h1>
+                                    <p class="card-text">{{ drink.description }}</p>
+                                    <p class="card-text">{{ drink.price_for_one }}</p>
+                                    <p class="card-text">{{ drink.notes }}</p>
+                                    <a href="{% url "cafe:dish_detail" drink.id %}"
                                        class="btn btn-primary">Detail</a>
                                 </div>
                             </div>

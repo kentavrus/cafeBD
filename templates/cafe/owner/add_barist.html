@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Add barist
+{% endblock %}
+
+{% block lists %}
+    {% include "cafe/owner/navigation_owner.html" %}
+{% endblock %}
+
+{% block content %}
+    <form method="post" action="{% url "cafe:barist_add" %}">
+        {% csrf_token %}
+        <div class=" form-row">
+            <div class="form-group col-md-6">
+                <label for="inputName">Name</label>
+                <input type="text" class="form-control" id="inputName" placeholder="name" name="name" required>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="inputSurname">Surname</label>
+                <input type="text" class="form-control" id="inputSurname" placeholder="surname" name="surname" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="inputIpn">IPN</label>
+            <input type="text" class="form-control" id="inputIpn" placeholder="ipn" name="ipn" required>
+        </div>
+        <div class="form-group">
+            <label for="inputPhone">Phone</label>
+            <input type="text" class="form-control" id="inputPhone" placeholder="phone" name="phone" required>
+        </div>
+        <div class="form-group">
+            <label for="inputEmail">Email</label>
+            <input type="email" class="form-control" id="inputEmail" placeholder="email" name="email">
+        </div>
+        <div class="form-group">
+            <label for="inputLogin">Login</label>
+            <input type="text" class="form-control" id="inputLogin" placeholder="login" name="login" required>
+        </div>
+        <div class="form-group">
+            <label for="inputPassword">Password</label>
+            <input type="password" class="form-control" id="inputPassword" placeholder="password" name="password"
+                   required>
+        </div>
+        <div class="form-group">
+            <label for="inputNotes">Notes</label>
+            <textarea style="width: 100%; height: 100px" name="notes" id="inputNotes"></textarea>
+        </div>
+        <input type="submit" class="form-control btn btn-success">
+    </form>
+{% endblock %}

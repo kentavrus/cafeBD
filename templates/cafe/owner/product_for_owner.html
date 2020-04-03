@@ -4,6 +4,10 @@
     {{ product.name }}
 {% endblock %}
 
+{% block lists %}
+   {% include "cafe/owner/navigation_owner.html" %}
+{% endblock %}
+
 {% block content %}
     {% if product %}
         <div class="card" style="width: 18rem">

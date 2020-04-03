@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Suppliers page
+{% endblock %}
+
+{% block lists %}
+   {% include "cafe/owner/navigation_owner.html" %}
+{% endblock %}
+
+{% block content %}
+    {% if suppliers %}
+        <div class="py-5">
+            <div class="container">
+                <div class="row">
+                    {% for supplier in suppliers %}
+                        <div class="col-sm">
+                            <div class="card mb-2" style="width: 18rem; height: 20rem">
+                                <div class="card-body">
+                                    <h1 class="card-title">{{ supplier.edrpou }}</h1>
+                                    <p class="card-text">{{ supplier.name }}</p>
+                                    <p class="card-text">{{ supplier.address }}</p>
+                                    <p class="card-text">{{ supplier.phone }}</p>
+                                    <p class="card-text">{{ supplier.email }}</p>
+                                    <p class="card-text">{{ supplier.notes }}</p>
+                                    <a href="{% url "cafe:supplier_detail" supplier.edrpou %}"
+                                       class="btn btn-primary">Detail</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+    {% endif %}
+{% endblock %}

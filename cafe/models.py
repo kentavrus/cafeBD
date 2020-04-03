@@ -10,7 +10,6 @@ class User(models.Model):
     role = models.CharField("role of user", max_length=20)
 
 
-
 class Barist(models.Model):
     ipn = models.CharField("barista's ipn", max_length=20, primary_key=True)
     name = models.CharField("barista's name", max_length=20, null=False)

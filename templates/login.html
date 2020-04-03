@@ -35,7 +35,7 @@
 
             <form method="post" action="{% url "cafe:login" %}" class="login100-form validate-form">
                 {% csrf_token %}
-					<span class="login100-form-title">
+                <span class="login100-form-title">
 						Member Login
 					</span>
 
@@ -60,6 +60,8 @@
                         Login
                     </button>
                 </div>
+                <br>
+                <p class="text-center text-danger">{{ error }}</p>
             </form>
         </div>
     </div>

@@ -1,0 +1,27 @@
+<li class="nav-item">
+    <a class="nav-link" href="{% url "cafe:home" %}">Home <span class="sr-only">(current)</span></a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url "cafe:baristas" %}">Baristas</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url "cafe:suppliers" %}">Suppliers</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url "cafe:products" %}">Products</a>
+</li>
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="{% url "cafe:dishes" %}" id="navbarDropdown" role="button"
+       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Dishes
+    </a>
+    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+        <a class="dropdown-item" href="{% url "cafe:drinks" %}">Drinks</a>
+        <a class="dropdown-item" href="{% url "cafe:foods" %}">Food</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="{% url "cafe:dishes" %}">All dishes</a>
+    </div>
+</li>
+<li class="nav-item">
+    <a class="nav-link disabled" href="#">Disabled</a>
+</li>

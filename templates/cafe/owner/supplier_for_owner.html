@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Supplier {{ supplier.name }}
+{% endblock %}
+
+{% block lists %}
+   {% include "cafe/owner/navigation_owner.html" %}
+{% endblock %}
+
+{% block content %}
+    {% if supplier %}
+        <div class="card" style="width: 18rem">
+            <div class="card-body">
+                <h1 class="card-title">{{ supplier.edrpou }}</h1>
+                <p class="card-text">{{ supplier.name }}</p>
+                <p class="card-text">{{ supplier.address }}</p>
+                <p class="card-text">{{ supplier.phone }}</p>
+                <p class="card-text">{{ supplier.email }}</p>
+                <p class="card-text">{{ supplier.notes }}</p>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
