@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Bills page
+{% endblock %}
+
+{% block lists %}
+    {% include "cafe/owner/navigation_owner.html" %}
+{% endblock %}
+
+{% block content %}
+    {% if bills %}
+        <div class="py-5">
+            <div class="container">
+                <div class="row">
+                    {% for bill in bills %}
+                        <div class="col-sm">
+                            <div class="card mb-2" style="width: 18rem; height: 20rem">
+                                <div class="card-body">
+                                    <h1 class="card-title">{{ bill.id }}</h1>
+                                    <p class="card-text">{{ bill.datetime }}</p>
+                                    <p class="card-text">{{ bill.barist_name }}</p>
+                                    <a href="{% url "cafe:bill_detail" bill.id %}"
+                                       class="btn btn-primary">Print bill</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    <div class="text-center">
+        <a class="btn btn-primary" href="{% url "cafe:add_bill" %}">Add new bill</a>
+    </div>
+{% endblock %}

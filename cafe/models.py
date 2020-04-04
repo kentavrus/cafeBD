@@ -34,15 +34,36 @@ class Dish(models.Model):
         return "{}".format(self.name)
 
 
+class Product(models.Model):
+    name = models.CharField("name of product", max_length=30)
+    quantity = models.IntegerField("quantity of product in storage", default=0)
+    price_for_kg = models.IntegerField("price for one kg of product")
+    notes = models.TextField("notes for product", blank=True)
+
+    def __str__(self):
+        return "{}".format(self.name)
+
+
+class DishRows(models.Model):
+    dish = models.ForeignKey(Dish, on_delete=models.DO_NOTHING)
+    product = models.ForeignKey(Product, on_delete=models.DO_NOTHING)
+    quantity_of_dish = models.FloatField()
+    price_for_all_portions = models.FloatField()
+
+    def save(self, *args, **kwargs):
+        self.price_for_all_portions = self.dish.price_for_one * self.quantity_of_dish
+        super(DishRows, self).save(*args, **kwargs)
+
+
 class Supplier(models.Model):
-    edrpou = models.CharField("edrpou of supplier", max_length=30)
+    edrpou = models.CharField("edrpou of supplier", max_length=30, unique=True)
     name = models.CharField("name of supplier", max_length=30)
     city = models.CharField("city of supplier", max_length=30)
     street = models.CharField("street of supplier", max_length=30)
     number_of_house = models.CharField("number of house of supplier", max_length=10)
     phone = models.CharField("phone number of supplier", max_length=13)
     email = models.CharField("email of supplier", max_length=30)
-    notes = models.TextField("notes for supplier", blank=True)
+    notes = models.TextField("notes for supplier", blank=True, null=True)
 
     @property
     def address(self):
@@ -53,10 +74,12 @@ class Supplier(models.Model):
 
 
 class Invoice(models.Model):
+    id = models.IntegerField(primary_key=True, auto_created=True)
     date = models.DateTimeField(auto_now_add=True, editable=True)
     name_of_product = models.CharField("name of product in invoice", max_length=30)
     quantity_of_product = models.IntegerField("quantity of product in invoice")
     all_price = models.IntegerField("price for all products", blank=True)
+    supplier = models.ForeignKey(Supplier, on_delete=models.DO_NOTHING)
     notes = models.TextField("notes for invoice", blank=True)
 
     def save(self, *args, **kwargs):
@@ -68,16 +91,6 @@ class Invoice(models.Model):
         return "{} {}".format(self.date, self.name_of_product)
 
 
-class Product(models.Model):
-    name = models.CharField("name of product", max_length=30)
-    quantity = models.IntegerField("quantity of product in storage", default=0)
-    price_for_kg = models.IntegerField("price for one kg of product")
-    notes = models.TextField("notes for product", blank=True)
-
-    def __str__(self):
-        return "{}".format(self.name)
-
-
 class InvoiceRows(models.Model):
     invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
@@ -86,4 +99,40 @@ class InvoiceRows(models.Model):
 
     def save(self, *args, **kwargs):
         self.sum = self.product.price_for_kg * self.quantity_of_product
-        super(InvoiceRows, self.save(*args, **kwargs))
+        super(InvoiceRows, self).save(*args, **kwargs)
+
+
+class Card(models.Model):
+    quantity_of_bonuses = models.IntegerField("quantity of bonuses on card")
+
+
+class Bill(models.Model):
+    id = models.IntegerField(primary_key=True, auto_created=True)
+    datetime = models.DateTimeField(auto_now_add=True, editable=True)
+    quantity = models.IntegerField("quantity of dishes in bill", default=0)
+    price = models.IntegerField("price in bill", default=0)
+    card = models.ForeignKey(Card, on_delete=models.DO_NOTHING, blank=True, null=True)
+    barist = models.ForeignKey(Barist, on_delete=models.DO_NOTHING)
+    barist_name = models.CharField(max_length=30, default="")
+    notes = models.TextField(blank=True)
+
+    def save(self, *args, **kwargs):
+        self.barist_name = self.barist.name
+        self.price = 0
+        self.quantity = 0
+        for i in BillRows.objects.filter(bill_id=self.id):
+            self.price += i.price
+            self.quantity += i.quantity
+        print("sho ne tak")
+        super(Bill, self).save(*args, **kwargs)
+
+
+class BillRows(models.Model):
+    dish = models.ForeignKey(Dish, on_delete=models.DO_NOTHING)
+    bill = models.ForeignKey(Bill, on_delete=models.DO_NOTHING)
+    quantity = models.IntegerField("quantity of dish")
+    price = models.IntegerField("price of dish", default=0)
+
+    def save(self, *args, **kwargs):
+        self.price = self.dish.price_for_one * self.quantity
+        super(BillRows, self).save(*args, **kwargs)
