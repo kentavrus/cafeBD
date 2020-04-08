@@ -149,12 +149,4 @@ class BillRows(models.Model):
 
     def save(self, *args, **kwargs):
         self.price = self.dish.price_for_one * self.quantity
-        dishrows = DishRows.objects.filter(dish=self.dish)
-        print(dishrows)
-        for row in dishrows:
-            print(row)
-            product = Product.objects.get(id=row.product_id)
-            product.quantity -= (row.quantity_of_dish * self.quantity)
-            product.save()
-            print(product)
         super(BillRows, self).save(*args, **kwargs)

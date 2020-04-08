@@ -152,6 +152,11 @@ def bill_add(request):
         dish1 = Dish.objects.get(id=dish1_id)
         row1 = BillRows.objects.create(quantity=int(dishnumber1), dish=dish1, bill_id=bill.id)
         row1.save()
+        dishrow = DishRows.objects.filter(dish_id=dish1_id)
+        for row in dishrow:
+            product1 = Product.objects.get(id=row.product_id)
+            product1.quantity -= int(dishnumber1) * int(row.quantity_of_dish)
+            product1.save()
     dish2_id = request.POST.get('dishname2')
     print(dish2_id)
     if dish2_id is not None:
@@ -159,12 +164,22 @@ def bill_add(request):
         dishnumber2 = request.POST.get('dishnumber2')
         row2 = BillRows.objects.create(quantity=int(dishnumber2), dish_id=dish2_id, bill_id=bill.id)
         row2.save()
+        dishrow2 = DishRows.objects.filter(dish_id=dish2_id)
+        for row in dishrow2:
+            product2 = Product.objects.get(id=row.product_id)
+            product2.quantity -= int(dishnumber2) * int(row.quantity_of_dish)
+            product2.save()
     dish3_id = request.POST.get('dishname3')
     if dish3_id is not None:
         dish3 = Dish.objects.get(id=dish3_id)
         dishnumber3 = request.POST.get('dishnumber3')
         row3 = BillRows.objects.create(quantity=int(dishnumber3), dish_id=dish3_id, bill_id=bill.id)
         row3.save()
+        dishrow3 = DishRows.objects.filter(dish_id=dish3_id)
+        for row in dishrow3:
+            product3 = Product.objects.get(id=row.product_id)
+            product3.quantity -= int(dishnumber3) * int(row.quantity_of_dish)
+            product3.save()
     notes = request.POST.get('notes')
     bill.notes = notes
     bill.save()
