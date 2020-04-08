@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block lists %}
-   {% include "cafe/owner/navigation_owner.html" %}
+    {% include "cafe/owner/navigation_owner.html" %}
 {% endblock %}
 
 {% block content %}
@@ -32,4 +32,7 @@
         </div>
 
     {% endif %}
+    <div class="text-center">
+        <a class="btn btn-primary" href="{% url "cafe:add_dish" %}">Add new dish</a>
+    </div>
 {% endblock %}

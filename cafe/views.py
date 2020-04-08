@@ -2,8 +2,12 @@ from datetime import timezone, datetime
 
 from django.http import Http404
 from django.shortcuts import render, redirect
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.platypus import Paragraph, Table, TableStyle
 
-from .models import Barist, Dish, Product, Invoice, User, Supplier, Bill, BillRows
+from .models import Barist, Dish, Product, Invoice, User, Supplier, Bill, BillRows, InvoiceRows, DishRows
 
 import io
 from django.http import FileResponse
@@ -143,7 +147,6 @@ def bill_add(request):
     except:
         bill = Bill.objects.create(id=0, barist=barist, datetime=datetime.now)
     dish1_id = request.POST.get('dishname1')
-    print(dish1_id)
     if dish1_id is not None:
         dishnumber1 = request.POST.get('dishnumber1')
         dish1 = Dish.objects.get(id=dish1_id)
@@ -184,17 +187,35 @@ def bill_detail(request, bill_id):
         raise Http404("Bill not found")
     buffer = io.BytesIO()
 
-    p = canvas.Canvas(buffer)
-    width, height = 595.27, 841.89
+    styles = getSampleStyleSheet()
+    style = styles["BodyText"]
 
-    p.drawString(10, height - 10, str(bill.id))
-    p.drawString(15, height - 15, bill.barist_name)
+    p = canvas.Canvas(buffer, pagesize=letter)
+    header = Paragraph("<bold><font size=18>Bill " + str(bill.id) + " " + str(
+        bill.datetime.strftime("%m/%d/%Y, %H:%M:%S")) + " " + str(
+        bill.barist_name) + "</font></bold>", style)
+    data = []
     for row in billrows:
-        i = 25
-        p.drawString(100, height - i, row.dish.name)
-        p.drawString(400, height - i, str(row.quantity))
-        p.drawString(600, height - i, str(row.price))
-        i += 10
+        data.append([row.dish.name, row.quantity, row.price])
+    t = Table(data)
+    t.setStyle(TableStyle([("BOX", (0, 0), (-1, -1), 0.25, colors.black),
+                           ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black)]))
+    data_len = len(data)
+
+    for each in range(data_len):
+        if each % 2 == 0:
+            bg_color = colors.whitesmoke
+        else:
+            bg_color = colors.lightgrey
+        t.setStyle(TableStyle([('BACKGROUND', (0, each), (-1, each), bg_color)]))
+    aW = 540
+    aH = 720
+
+    w, h = header.wrap(aW, aH)
+    header.drawOn(p, 72, aH)
+    aH = aH - h
+    w, h = t.wrap(aW, aH)
+    t.drawOn(p, 72, aH - h)
     p.showPage()
     p.save()
     buffer.seek(0)
@@ -209,3 +230,169 @@ def add_bill(request):
         Http404("Barists not found")
     n = range(1, 4)
     return render(request, 'cafe/add/bill_add.html', {"baristas": baristas, "n": n, "dishes": dishes})
+
+
+def add_supplier(request):
+    return render(request, "cafe/add/add_supplier.html")
+
+
+def supplier_add(request):
+    edrpou = request.POST.get("edrpou")
+    name = request.POST.get("name")
+    country = request.POST.get("country")
+    city = request.POST.get("city")
+    street = request.POST.get("street")
+    house = request.POST.get("house")
+    phone = request.POST.get("phone")
+    email = request.POST.get("email")
+    notes = request.POST.get("notes")
+    supplier = Supplier.objects.create(edrpou=edrpou, name=name, country=country, city=city, street=street,
+                                       number_of_house=house, phone=phone, email=email, notes=notes)
+    supplier.save()
+    return redirect('/suppliers/')
+
+
+def invoices(request):
+    try:
+        invoices = Invoice.objects.all()
+    except:
+        raise Http404("Invoices not found")
+    return render(request, "cafe/owner/invoices_owner.html", {"invoices": invoices})
+
+
+def add_invoice(request):
+    try:
+        suppliers = Supplier.objects.all()
+        products = Product.objects.all()
+    except:
+        raise Http404("Not found")
+    n = range(1, 4)
+    return render(request, "cafe/add/add_invoice.html", {"suppliers": suppliers, "products": products, "n": n})
+
+
+def invoice_add(request):
+    supplier_id = request.POST.get("supplier_name")
+    try:
+        invoice_last = Invoice.objects.all().last()
+        invoice = Invoice.objects.create(id=invoice_last.id + 1, supplier_id=supplier_id, date=datetime.now)
+    except:
+        invoice = Invoice.objects.create(id=0, supplier_id=supplier_id, date=datetime.now)
+    product_1 = request.POST.get("product1")
+    if product_1 is not None:
+        product_number_1 = request.POST.get("productnumber1")
+        row1 = InvoiceRows.objects.create(product_id=product_1, invoice=invoice,
+                                          quantity_of_product=int(product_number_1)/2)
+        row1.save()
+    product_2 = request.POST.get("product2")
+    if product_2 is not None:
+        product_number_2 = request.POST.get("productnumber2")
+        row2 = InvoiceRows.objects.create(product_id=product_2, invoice=invoice,
+                                          quantity_of_product=int(product_number_2)/2)
+        row2.save()
+    product_3 = request.POST.get("product3")
+    if product_3 is not None:
+        product_number_3 = request.POST.get("productnumber3")
+        row3 = InvoiceRows.objects.create(product_id=product_3, invoice=invoice,
+                                          quantity_of_product=int(product_number_3)/2)
+        row3.save()
+    notes = request.POST.get("notes")
+    invoice.notes = notes
+    invoice.save()
+    return redirect('/invoices/')
+
+
+def invoice_detail(request, invoice_id):
+    try:
+        invoice = Invoice.objects.filter(id=invoice_id).first()
+        invoicerows = InvoiceRows.objects.filter(invoice=invoice)
+    except:
+        raise Http404("Bill not found")
+    buffer = io.BytesIO()
+
+    styles = getSampleStyleSheet()
+    style = styles["BodyText"]
+
+    p = canvas.Canvas(buffer, pagesize=letter)
+    header = Paragraph("<bold><font size=18>Invoice " + str(invoice.id) + " " + str(
+        invoice.date.strftime("%m/%d/%Y, %H:%M:%S")) + " " + str(
+        invoice.supplier.name) + "</font></bold>", style)
+    data = []
+    for row in invoicerows:
+        data.append([row.product.name, row.quantity_of_product, row.sum])
+    t = Table(data)
+    t.setStyle(TableStyle([("BOX", (0, 0), (-1, -1), 0.25, colors.black),
+                           ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black)]))
+    data_len = len(data)
+
+    for each in range(data_len):
+        if each % 2 == 0:
+            bg_color = colors.whitesmoke
+        else:
+            bg_color = colors.lightgrey
+        t.setStyle(TableStyle([('BACKGROUND', (0, each), (-1, each), bg_color)]))
+    aW = 540
+    aH = 720
+
+    w, h = header.wrap(aW, aH)
+    header.drawOn(p, 72, aH)
+    aH = aH - h
+    w, h = t.wrap(aW, aH)
+    t.drawOn(p, 72, aH - h)
+    p.showPage()
+    p.save()
+    buffer.seek(0)
+    return FileResponse(buffer, as_attachment=True, filename='invoice_' + str(invoice_id) + '.pdf')
+
+
+def add_dish(request):
+    try:
+        products = Product.objects.all()
+    except:
+        raise Http404("Products not found")
+    n = range(1, 4)
+    return render(request, "cafe/add/add_dish.html", {"products": products, "n": n})
+
+
+def dish_add(request):
+    name = request.POST.get('name')
+    description = request.POST.get('description')
+    type = request.POST.get('dishtype')
+    notes = request.POST.get('notes')
+    try:
+        dish_last = Dish.objects.all().last()
+        dish = Dish.objects.create(id=dish_last.id + 1, name=name, description=description, type_of_dish=type,
+                                   notes=notes)
+    except:
+        dish = Dish.objects.create(id=0, name=name, description=description, type_of_dish=type,
+                                   notes=notes)
+
+    dishproduct1 = request.POST.get('dishproduct1')
+    if dishproduct1 is not None:
+        productnumber1 = request.POST.get('productnumber1')
+        row1 = DishRows.objects.create(product_id=dishproduct1, quantity_of_dish=int(productnumber1), dish_id=dish.id)
+        row1.save()
+    dishproduct2 = request.POST.get('dishproduct2')
+    if dishproduct2 is not None:
+        productnumber2 = request.POST.get('productnumber2')
+        row2 = DishRows.objects.create(product_id=dishproduct2, quantity_of_dish=int(productnumber2), dish_id=dish.id)
+        row2.save()
+    dishproduct3 = request.POST.get('dishproduct3')
+    if dishproduct3 is not None:
+        productnumber3 = request.POST.get('productnumber3')
+        row3 = DishRows.objects.create(product_id=dishproduct3, quantity_of_dish=int(productnumber3), dish_id=dish.id)
+        row3.save()
+    dish.save()
+    return redirect('/dishes/')
+
+
+def add_product(request):
+    return render(request, "cafe/add/add_product.html")
+
+
+def product_add(request):
+    name = request.POST.get("name")
+    price = request.POST.get("price")
+    notes = request.POST.get("notes")
+    product = Product.objects.create(name=name, price_for_kg=price, notes=notes)
+    product.save()
+    return redirect('/products/')

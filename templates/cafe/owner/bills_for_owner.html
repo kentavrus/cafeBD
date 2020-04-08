@@ -9,28 +9,30 @@
 {% endblock %}
 
 {% block content %}
-    {% if bills %}
-        <div class="py-5">
-            <div class="container">
-                <div class="row">
-                    {% for bill in bills %}
-                        <div class="col-sm">
-                            <div class="card mb-2" style="width: 18rem; height: 20rem">
-                                <div class="card-body">
-                                    <h1 class="card-title">{{ bill.id }}</h1>
-                                    <p class="card-text">{{ bill.datetime }}</p>
-                                    <p class="card-text">{{ bill.barist_name }}</p>
-                                    <a href="{% url "cafe:bill_detail" bill.id %}"
-                                       class="btn btn-primary">Print bill</a>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-    {% endif %}
     <div class="text-center">
         <a class="btn btn-primary" href="{% url "cafe:add_bill" %}">Add new bill</a>
     </div>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Datetime</th>
+            <th scope="col">Barist name</th>
+            <th scope="col">Detail</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if bills %}
+            {% for bill in bills %}
+                <tr>
+                <th scope="row">{{ bill.id }}</th>
+                <td>{{ bill.datetime }}</td>
+                <td>{{ bill.barist_name }}</td>
+                <td><a href="{% url "cafe:bill_detail" bill.id %}" class="btn btn-primary">Print</a></td>
+                </tr>
+            {% endfor %}
+        {% endif %}
+        </tbody>
+    </table>
+
 {% endblock %}

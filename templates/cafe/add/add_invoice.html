@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-    Add bill
+    Add Invoice
 {% endblock %}
 
 <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
@@ -13,33 +13,32 @@
 {% endblock %}
 
 {% block content %}
-    <form method="post" action="{% url "cafe:bill_add" %}">
+    <form method="post" action="{% url "cafe:invoice_add" %}">
         {% csrf_token %}
         <div class="form-group col-md-6">
-            <label for="inputBarist">Barist</label>
-            <select id="inputBarist" name="baristname" class="selectpicker form-control">
-                <option value="" disabled selected>Choose barist</option>
-                {% for barist in baristas %}
-                    <option value="{{ barist.ipn }}">{{ barist.surname }} {{ barist.name }}</option>
+            <label for="inputSupplier">Supplier</label>
+            <select id="inputSupplier" name="supplier_name" class="selectpicker form-control">
+                <option value="" disabled selected>Choose supplier</option>
+                {% for supplier in suppliers %}
+                    <option value="{{ supplier.id }}">{{ supplier.name }}</option>
                 {% endfor %}
             </select>
         </div>
         <div class="form-row">
             {% for i in n %}
                 <div class="form-group col-md-3">
-                    <label for="inputNameDish{{ i }}">Dish{{ i }}</label>
-                    <select id="inputBarist" name="dishname{{ i }}" class="selectpicker form-control">
-                        <option value="?" disabled selected>Choose dish</option>
-                        {% for dish in dishes %}
-                            <option value="{{ dish.id }}">{{ dish.name }}</option>
+                    <label for="inputNameProduct{{ i }}">Product{{ i }}</label>
+                    <select id="inputNameProduct" name="product{{ i }}" class="selectpicker form-control">
+                        <option value="?" disabled selected>Choose product</option>
+                        {% for product in products %}
+                            <option value="{{ product.id }}">{{ product.name }}</option>
                         {% endfor %}
                     </select>
                 </div>
                 <div class="form-group col-md-3">
-                    <label for="inputQuantityDish{{ i }}">Dish{{ i }}</label>
-                    <input type="number" class="form-control" id="inputQuantityDish{{ i }}"
-                           placeholder="number of dishes"
-                           name="dishnumber{{ i }}">
+                    <label for="inputQuantityProduct{{ i }}">Product{{ i }}</label>
+                    <input type="number" class="form-control" id="inputQuantityProduct{{ i }}"
+                           placeholder="number of products" name="productnumber{{ i }}">
                 </div>
             {% endfor %}
         </div>

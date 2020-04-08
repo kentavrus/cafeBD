@@ -26,12 +26,20 @@ class Dish(models.Model):
     name = models.CharField("dish name", max_length=20)
     description = models.TextField("dish description")
     type_of_dish = models.CharField("type of dish", max_length=10)
-    margin = models.IntegerField("margin")
-    price_for_one = models.IntegerField("price")
+    margin = models.FloatField("margin", default=0)
+    price_for_one = models.IntegerField("price", default=0)
     notes = models.TextField("notes for dish", blank=True)
 
     def __str__(self):
         return "{}".format(self.name)
+
+    def save(self, *args, **kwargs):
+        dishrows = DishRows.objects.filter(dish=self)
+        for row in dishrows:
+            self.price_for_one += int(row.price_for_all_portions)
+        self.margin = self.price_for_one * 0.1
+        self.price_for_one += int(self.margin)
+        super(Dish, self).save(*args, **kwargs)
 
 
 class Product(models.Model):
@@ -58,6 +66,7 @@ class DishRows(models.Model):
 class Supplier(models.Model):
     edrpou = models.CharField("edrpou of supplier", max_length=30, unique=True)
     name = models.CharField("name of supplier", max_length=30)
+    country = models.CharField("country of supplier", max_length=30, default="Ukraine")
     city = models.CharField("city of supplier", max_length=30)
     street = models.CharField("street of supplier", max_length=30)
     number_of_house = models.CharField("number of house of supplier", max_length=10)
@@ -67,7 +76,7 @@ class Supplier(models.Model):
 
     @property
     def address(self):
-        return u'%s %s %s' % (self.city, self.street, self.number_of_house)
+        return u'%s %s %s %s' % (self.country, self.city, self.street, self.number_of_house)
 
     def __str__(self):
         return "{}".format(self.name)
@@ -76,19 +85,21 @@ class Supplier(models.Model):
 class Invoice(models.Model):
     id = models.IntegerField(primary_key=True, auto_created=True)
     date = models.DateTimeField(auto_now_add=True, editable=True)
-    name_of_product = models.CharField("name of product in invoice", max_length=30)
     quantity_of_product = models.IntegerField("quantity of product in invoice")
     all_price = models.IntegerField("price for all products", blank=True)
     supplier = models.ForeignKey(Supplier, on_delete=models.DO_NOTHING)
     notes = models.TextField("notes for invoice", blank=True)
 
     def save(self, *args, **kwargs):
-        for i in InvoiceRows.objects.filter(invoice=self):
+        self.quantity_of_product = 0
+        self.all_price = 0
+        for i in InvoiceRows.objects.filter(invoice_id=self.id):
             self.all_price += i.sum
             self.quantity_of_product += i.quantity_of_product
+        super(Invoice, self).save(*args, **kwargs)
 
     def __str__(self):
-        return "{} {}".format(self.date, self.name_of_product)
+        return "{} {}".format(self.date, self.supplier.name)
 
 
 class InvoiceRows(models.Model):
@@ -99,6 +110,10 @@ class InvoiceRows(models.Model):
 
     def save(self, *args, **kwargs):
         self.sum = self.product.price_for_kg * self.quantity_of_product
+        product = Product.objects.get(id=self.product.id)
+        product.quantity += self.quantity_of_product
+        print(product.quantity)
+        product.save()
         super(InvoiceRows, self).save(*args, **kwargs)
 
 
@@ -117,13 +132,12 @@ class Bill(models.Model):
     notes = models.TextField(blank=True)
 
     def save(self, *args, **kwargs):
-        self.barist_name = self.barist.name
+        self.barist_name = self.barist.surname
         self.price = 0
         self.quantity = 0
         for i in BillRows.objects.filter(bill_id=self.id):
             self.price += i.price
             self.quantity += i.quantity
-        print("sho ne tak")
         super(Bill, self).save(*args, **kwargs)
 
 
@@ -135,4 +149,12 @@ class BillRows(models.Model):
 
     def save(self, *args, **kwargs):
         self.price = self.dish.price_for_one * self.quantity
+        dishrows = DishRows.objects.filter(dish=self.dish)
+        print(dishrows)
+        for row in dishrows:
+            print(row)
+            product = Product.objects.get(id=row.product_id)
+            product.quantity -= (row.quantity_of_dish * self.quantity)
+            product.save()
+            print(product)
         super(BillRows, self).save(*args, **kwargs)

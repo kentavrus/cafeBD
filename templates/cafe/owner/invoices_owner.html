@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Bills page
+{% endblock %}
+
+{% block lists %}
+    {% include "cafe/owner/navigation_owner.html" %}
+{% endblock %}
+
+{% block content %}
+    <div class="text-center">
+        <a class="btn btn-primary" href="{% url "cafe:add_invoice" %}">Add new invoice</a>
+    </div>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Datetime</th>
+            <th scope="col">Supplier name</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Sum</th>
+            <th scope="col">Detail</th>
+        </tr>
+        </thead>
+    <tbody>
+        {% if invoices %}
+            {% for invoice in invoices %}
+                <tr>
+                <th scope="row">{{ invoice.id }}</th>
+                <td>{{ invoice.date }}</td>
+                <td>{{ invoice.supplier.name }}</td>
+                <td>{{ invoice.quantity_of_product }}</td>
+                <td>{{ invoice.all_price }}</td>
+                <td><a href="{% url "cafe:invoice_detail" invoice.id %}" class="btn btn-primary">Print</a></td>
+                </tr>
+            {% endfor %}
+        {% endif %}
+        </tbody>
+    </table>
+
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Add supplier
+{% endblock %}
+
+{% block lists %}
+    {% include "cafe/owner/navigation_owner.html" %}
+{% endblock %}
+
+{% block content %}
+    <form method="post" action="{% url "cafe:supplier_add" %}">
+        {% csrf_token %}
+        <div class="form-group col-md-6">
+            <label for="inputEdrpou">EDRPOU</label>
+            <input type="text" class="form-control" id="inputEdrpou" placeholder="EDRPOU" name="edrpou" required>
+        </div>
+        <div class="form-group col-md-6">
+            <label for="inputName">Name</label>
+            <input type="text" class="form-control" id="inputName" placeholder="name" name="name" required>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="inputCountry">Country</label>
+                <input type="text" class="form-control" id="inputCountry" placeholder="country" name="country" required>
+            </div>
+            <div class="form-group">
+                <label for="inputCity">City</label>
+                <input type="text" class="form-control" id="inputCity" placeholder="city" name="city" required>
+            </div>
+            <div class="form-group">
+                <label for="inputStreet">Street</label>
+                <input type="text" class="form-control" id="inputStreet" placeholder="street" name="street" required>
+            </div>
+            <div class="form-group">
+                <label for="inputHouse">Number of house</label>
+                <input type="number" class="form-control" id="inputHouse" placeholder="number of house" name="house"
+                       required>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="inputPhone">Phone</label>
+            <input type="text" class="form-control" id="inputPhone" placeholder="phone" name="phone" required>
+        </div>
+        <div class="form-group">
+            <label for="inputEmail">Email</label>
+            <input type="email" class="form-control" id="inputEmail" placeholder="email" name="email">
+        </div>
+        <div class="form-group">
+            <label for="inputNotes">Notes</label>
+            <textarea style="width: 100%; height: 100px" name="notes" id="inputNotes"></textarea>
+        </div>
+        <input type="submit" class="form-control btn btn-success">
+    </form>
+{% endblock %}
