@@ -5,7 +5,12 @@
 {% endblock %}
 
 {% block lists %}
-    {% include "cafe/owner/navigation_owner.html" %}
+    {% if role == "owner" %}
+        {% include "cafe/owner/navigation_owner.html" %}
+    {% endif %}
+    {% if role == "admin" %}
+        {% include "cafe/owner/navigation_admin.html" %}
+    {% endif %}
 {% endblock %}
 
 {% block content %}
@@ -23,16 +28,16 @@
             <th scope="col">Detail</th>
         </tr>
         </thead>
-    <tbody>
+        <tbody>
         {% if invoices %}
             {% for invoice in invoices %}
                 <tr>
-                <th scope="row">{{ invoice.id }}</th>
-                <td>{{ invoice.date }}</td>
-                <td>{{ invoice.supplier.name }}</td>
-                <td>{{ invoice.quantity_of_product }}</td>
-                <td>{{ invoice.all_price }}</td>
-                <td><a href="{% url "cafe:invoice_detail" invoice.id %}" class="btn btn-primary">Print</a></td>
+                    <th scope="row">{{ invoice.id }}</th>
+                    <td>{{ invoice.date }}</td>
+                    <td>{{ invoice.supplier.name }}</td>
+                    <td>{{ invoice.quantity_of_product }}</td>
+                    <td>{{ invoice.all_price }}</td>
+                    <td><a href="{% url "cafe:invoice_detail" invoice.id %}" class="btn btn-primary">Print</a></td>
                 </tr>
             {% endfor %}
         {% endif %}

@@ -5,7 +5,15 @@
 {% endblock %}
 
 {% block lists %}
-    {% include "cafe/owner/navigation_owner.html" %}
+    {% if role == "owner" %}
+        {% include "cafe/owner/navigation_owner.html" %}
+    {% endif %}
+    {% if role == "barista" %}
+        {% include "cafe/owner/navigation_barista.html" %}
+    {% endif %}
+    {% if role == "admin" %}
+        {% include "cafe/owner/navigation_admin.html" %}
+    {% endif %}
 {% endblock %}
 
 {% block content %}
@@ -25,10 +33,10 @@
         {% if bills %}
             {% for bill in bills %}
                 <tr>
-                <th scope="row">{{ bill.id }}</th>
-                <td>{{ bill.datetime }}</td>
-                <td>{{ bill.barist_name }}</td>
-                <td><a href="{% url "cafe:bill_detail" bill.id %}" class="btn btn-primary">Print</a></td>
+                    <th scope="row">{{ bill.id }}</th>
+                    <td>{{ bill.datetime }}</td>
+                    <td>{{ bill.barist_name }}</td>
+                    <td><a href="{% url "cafe:bill_detail" bill.id %}" class="btn btn-primary">Print</a></td>
                 </tr>
             {% endfor %}
         {% endif %}

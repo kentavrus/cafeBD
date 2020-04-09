@@ -18,11 +18,11 @@
                             <div class="card mb-2" style="width: 18rem; height: 20rem">
                                 <div class="card-body">
                                     <h1 class="card-title">{{ food.name }}</h1>
-                                    <p class="card-text">{{ food.description }}</p>
                                     <p class="card-text">{{ food.price_for_one }}</p>
-                                    <p class="card-text">{{ food.notes }}</p>
-                                    <a href="{% url "cafe:dish_detail" food.id %}"
-                                       class="btn btn-primary">Detail</a>
+                                     <details>
+                                        {{ food.description }}
+                                        {{ food.notes }}
+                                    </details>
                                 </div>
                             </div>
                         </div>

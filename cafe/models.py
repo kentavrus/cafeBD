@@ -8,6 +8,7 @@ class User(models.Model):
     login = models.CharField("user login name", max_length=20)
     password = models.CharField("user password", max_length=20)
     role = models.CharField("role of user", max_length=20)
+    status = models.BooleanField(default=False)
 
 
 class Barist(models.Model):

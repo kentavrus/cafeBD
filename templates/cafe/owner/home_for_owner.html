@@ -3,6 +3,14 @@
 {% block title %}Home{% endblock %}
 
 {% block lists %}
-   {% include "cafe/owner/navigation_owner.html" %}
+    {% if role == "owner" %}
+        {% include "cafe/owner/navigation_owner.html" %}
+    {% endif %}
+    {% if role == "barista" %}
+        {% include "cafe/owner/navigation_barista.html" %}
+    {% endif %}
+    {% if role == "admin" %}
+        {% include "cafe/owner/navigation_admin.html" %}
+    {% endif %}
 {% endblock %}
 

@@ -19,9 +19,9 @@
                                     <h1 class="card-title">{{ product.name }}</h1>
                                     <p class="card-text">{{ product.quantity }}</p>
                                     <p class="card-text">{{ product.price_for_kg }}</p>
-                                    <p class="card-text">{{ product.notes }}</p>
-                                    <a href="{% url "cafe:product_detail" product.id %}"
-                                       class="btn btn-primary">Detail</a>
+                                     <details>
+                                        {{ product.notes }}
+                                    </details>
                                 </div>
                             </div>
                         </div>

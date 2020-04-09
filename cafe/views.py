@@ -13,21 +13,12 @@ import io
 from django.http import FileResponse
 from reportlab.pdfgen import canvas
 
-
 # Create your views here.
 
 
 def baristas(request):
     baristas_list = Barist.objects.all()
     return render(request, 'cafe/owner/baristas_for_owner.html', {"baristas": baristas_list})
-
-
-def barista_detail(request, barista_ipn):
-    try:
-        barist = Barist.objects.get(ipn=barista_ipn)
-    except:
-        raise Http404("Barist not found")
-    return render(request, 'cafe/owner/barista_for_owner.html', {"barista": barist})
 
 
 def index(request):
@@ -40,14 +31,6 @@ def dishes(request):
     except:
         raise Http404("Dishes not found")
     return render(request, 'cafe/owner/dishes_for_owner.html', {"dishes": dishes})
-
-
-def dish_detail(request, dish_id):
-    try:
-        dish = Dish.objects.get(id=dish_id)
-    except:
-        raise Http404("Dish not found")
-    return render(request, 'cafe/owner/dish_for_owner.html', {"dish": dish})
 
 
 def food(request):
@@ -74,28 +57,16 @@ def products(request):
     return render(request, 'cafe/owner/products_for_owner.html', {"products": products})
 
 
-def product_detail(request, product_id):
-    try:
-        product = Product.objects.get(id=product_id)
-    except:
-        raise Http404("Product not found")
-    return render(request, 'cafe/owner/product_for_owner.html', {"product": product})
-
-
 def login(request):
     username = request.POST.get('login')
     password = request.POST.get('password')
     try:
         user = User.objects.get(login=username, password=password)
+        user.status = True
+        user.save()
     except:
         return render(request, 'login.html', {"error": "Login failed"})
-    role = user.role
-    if role == "barista":
-        return render(request, 'cafe/for_barisra.html')
-    elif role == "admin":
-        return render(request, 'cafe/for_admin.html')
-    elif role == "owner":
-        return redirect('/owner/')
+    return redirect('/home/')
 
 
 def suppliers(request):
@@ -115,7 +86,12 @@ def supplier_detail(request, supplier_edrpou):
 
 
 def home(request):
-    return render(request, 'cafe/owner/home_for_owner.html')
+    try:
+        user = User.objects.get(status=True)
+    except:
+        raise Http404("User not found")
+    role = user.role
+    return render(request, 'cafe/owner/home_for_owner.html', {"role": role})
 
 
 def add_barist(request):
@@ -189,9 +165,10 @@ def bill_add(request):
 def bills(request):
     try:
         bills = Bill.objects.all()
+        user = User.objects.get(status=True)
     except:
         raise Http404("Bills not found")
-    return render(request, "cafe/owner/bills_for_owner.html", {"bills": bills})
+    return render(request, "cafe/owner/bills_for_owner.html", {"bills": bills, "role": user.role})
 
 
 def bill_detail(request, bill_id):
@@ -270,9 +247,10 @@ def supplier_add(request):
 def invoices(request):
     try:
         invoices = Invoice.objects.all()
+        user = User.objects.get(status=True)
     except:
         raise Http404("Invoices not found")
-    return render(request, "cafe/owner/invoices_owner.html", {"invoices": invoices})
+    return render(request, "cafe/owner/invoices_owner.html", {"invoices": invoices, "role": user.role})
 
 
 def add_invoice(request):
@@ -296,19 +274,19 @@ def invoice_add(request):
     if product_1 is not None:
         product_number_1 = request.POST.get("productnumber1")
         row1 = InvoiceRows.objects.create(product_id=product_1, invoice=invoice,
-                                          quantity_of_product=int(product_number_1)/2)
+                                          quantity_of_product=int(product_number_1) / 2)
         row1.save()
     product_2 = request.POST.get("product2")
     if product_2 is not None:
         product_number_2 = request.POST.get("productnumber2")
         row2 = InvoiceRows.objects.create(product_id=product_2, invoice=invoice,
-                                          quantity_of_product=int(product_number_2)/2)
+                                          quantity_of_product=int(product_number_2) / 2)
         row2.save()
     product_3 = request.POST.get("product3")
     if product_3 is not None:
         product_number_3 = request.POST.get("productnumber3")
         row3 = InvoiceRows.objects.create(product_id=product_3, invoice=invoice,
-                                          quantity_of_product=int(product_number_3)/2)
+                                          quantity_of_product=int(product_number_3) / 2)
         row3.save()
     notes = request.POST.get("notes")
     invoice.notes = notes
@@ -411,3 +389,13 @@ def product_add(request):
     product = Product.objects.create(name=name, price_for_kg=price, notes=notes)
     product.save()
     return redirect('/products/')
+
+
+def logout(request):
+    try:
+        user = User.objects.get(status=True)
+        user.status = False
+        user.save()
+    except:
+        raise Http404("User not found")
+    return redirect('/login/')
