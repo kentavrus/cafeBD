@@ -13,6 +13,7 @@ import io
 from django.http import FileResponse
 from reportlab.pdfgen import canvas
 
+
 # Create your views here.
 
 
@@ -166,9 +167,12 @@ def bills(request):
     try:
         bills = Bill.objects.all()
         user = User.objects.get(status=True)
+        barists = Barist.objects.all()
+        dishes = Dish.objects.all()
     except:
         raise Http404("Bills not found")
-    return render(request, "cafe/owner/bills_for_owner.html", {"bills": bills, "role": user.role})
+    return render(request, "cafe/owner/bills_for_owner.html",
+                  {"bills": bills, "role": user.role, "barists": barists, "dishes": dishes})
 
 
 def bill_detail(request, bill_id):
@@ -248,9 +252,12 @@ def invoices(request):
     try:
         invoices = Invoice.objects.all()
         user = User.objects.get(status=True)
+        suppliers = Supplier.objects.all()
+        products = Product.objects.all()
     except:
         raise Http404("Invoices not found")
-    return render(request, "cafe/owner/invoices_owner.html", {"invoices": invoices, "role": user.role})
+    return render(request, "cafe/owner/invoices_owner.html",
+                  {"invoices": invoices, "role": user.role, "suppliers": suppliers, "products": products})
 
 
 def add_invoice(request):
@@ -399,3 +406,41 @@ def logout(request):
     except:
         raise Http404("User not found")
     return redirect('/login/')
+
+
+def search_bill(request):
+    barist_id = request.POST.get('selectBarist')
+    dish_id = request.POST.get('selectDish')
+    try:
+        if barist_id is not None and dish_id is not None:
+            bills = Bill.objects.filter(barist_id=barist_id, billrows__dish_id=dish_id)
+        elif barist_id is not None:
+            bills = Bill.objects.filter(barist_id=barist_id)
+        elif dish_id is not None:
+            bills = Bill.objects.filter(billrows__dish_id=dish_id)
+        user = User.objects.get(status=True)
+        barists = Barist.objects.all()
+        dishes = Dish.objects.all()
+    except:
+        raise Http404("Bills not found")
+    return render(request, "cafe/owner/bills_for_owner.html",
+                  {"bills": bills, "role": user.role, "barists": barists, "dishes": dishes})
+
+
+def search_invoices(request):
+    supplier_id = request.POST.get('selectSupplier')
+    product_id = request.POST.get('selectProduct')
+    try:
+        if supplier_id is not None and product_id is not None:
+            invoices = Invoice.objects.filter(supplier_id=supplier_id, invoicerows__product_id=product_id)
+        elif supplier_id is not None:
+            invoices = Invoice.objects.filter(supplier_id=supplier_id)
+        elif product_id is not None:
+            invoices = Invoice.objects.filter(invoicerows__product_id=product_id)
+        user = User.objects.get(status=True)
+        suppliers = Supplier.objects.all()
+        products = Product.objects.all()
+    except:
+        raise Http404("Invoices not found")
+    return render(request, "cafe/owner/invoices_owner.html",
+                  {"invoices": invoices, "role": user.role, "suppliers": suppliers, "products": products})

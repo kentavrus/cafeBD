@@ -32,5 +32,8 @@ urlpatterns = [
     path('add_dish/', views.add_dish, name='add_dish'),
     path('dish_add/', views.dish_add, name='dish_add'),
     path('add_product/', views.add_product, name='add_product'),
-    path('product_add/', views.product_add, name='product_add')
+    path('product_add/', views.product_add, name='product_add'),
+    path('search_bill/', views.search_bill, name='searchBill'),
+    path('search_invoices/', views.search_invoices, name='searchInvoices'),
+
 ]
