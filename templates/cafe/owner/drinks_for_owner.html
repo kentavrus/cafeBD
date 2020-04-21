@@ -16,11 +16,15 @@
                     {% for drink in drinks %}
                         <div class = "col">
                             <div class="card mb-3" style="width: 18rem;">
-                                <img class="card-img-top" src="DENZELMANIA" alt="MISSING IMAGE">
+                                <img class="card-img-top" src="{{ drink.image }}" alt="MISSING IMAGE" style="height: 12rem;">
                                 <div class="card-body">
                                     <h5 class="card-title">{{ drink.name }}</h5>
                                     <p class="card-text">{{ drink.description }}</p>
                                     <p class="btn btn-primary">{{ drink.price_for_one }}</p>
+                                    {% if user.role == "owner" %}
+                                        <br>
+                                    <a class="btn btn-danger" href="{% url "cafe:delete_dish" drinks.id %}">Delete</a>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>

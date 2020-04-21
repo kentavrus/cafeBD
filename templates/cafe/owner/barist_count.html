@@ -67,22 +67,6 @@
             </form>
         </div>
     </div>
-    {% if barist_count %}
-        <table class="table table-striped">
-        <thead>
-        <tr>
-            <th scope="col">Barist name</th>
-            <th scope="col">Count</th>
-        </tr>
-        </thead>
-        <tbody>
-                <tr>
-                    <td>{{ barist_count.barist.name }}</td>
-                    <td>{{ barist_count.bills_count }}</td>
-                </tr>
-        </tbody>
-    </table>
-    {% else %}
     <table class="table table-striped">
         <thead>
         <tr>
@@ -112,6 +96,5 @@
         {% endif %}
         </tbody>
     </table>
-    {% endif %}
 
 {% endblock %}

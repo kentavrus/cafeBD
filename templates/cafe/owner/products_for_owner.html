@@ -4,12 +4,46 @@
     Products page
 {% endblock %}
 {% block lists %}
-   {% include "cafe/owner/navigation_owner.html" %}
+    {% include "cafe/owner/navigation_owner.html" %}
 {% endblock %}
 
 {% block content %}
-    <div class="text-left py-3">
+    <div class="row">
+        <div class="col">
+            <form method="post" action="{% url "cafe:search_product" %}">
+                {% csrf_token %}
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="selectPrice">Price:</label>
+                        <input type="number" name="selectPrice" class="form-control">
+                        <select name="selectFunc" class="selectpicker form-control">
+                            <option value="?" disabled selected>Choose less or greater</option>
+                            <option value="<">Less or equal</option>
+                            <option value=">">Greater or equal</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="selectDate">Date:</label>
+                        <input type="date" name="selectDate" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="selectSupplier">Supplier</label>
+                        <select name="selectSupplier" class="selectpicker form-control">
+                            <option value="?" disabled selected>Choose supplier</option>
+                            {% for supplier in suppliers %}
+                                <option value="{{ supplier.id }}">{{ supplier.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="form-control btn btn-primary mt-4">Search</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="text-left py-3">
             <a class="btn btn-primary" href="{% url "cafe:add_product" %}">Add new product</a>
+        </div>
     </div>
     <table class="table table-striped">
         <thead>
@@ -28,9 +62,13 @@
                     <td>{{ prod.price_for_kg }}</td>
                 </tr>
                 {% if prod.notes %}
-                <tr>
-                    <td colspan="4"><details><summary>Notes</summary><p>{{ prod.notes }}</p></details></td>
-                </tr>
+                    <tr>
+                        <td colspan="4">
+                            <details>
+                                <summary>Notes</summary>
+                                <p>{{ prod.notes }}</p></details>
+                        </td>
+                    </tr>
                 {% else %}
                     <tr>
                         <td colspan="4">No notes.</td>

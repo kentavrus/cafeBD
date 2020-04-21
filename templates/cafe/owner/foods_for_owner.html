@@ -5,27 +5,31 @@
 {% endblock %}
 
 {% block lists %}
-   {% include "cafe/owner/navigation_owner.html" %}
+    {% include "cafe/owner/navigation_owner.html" %}
 {% endblock %}
 
 {% block content %}
     {% if foods %}
         <p></p>
-            <div class="container">
-                <div class="row">
-                    {% for food in foods %}
-                        <div class = "col">
-                            <div class="card mb-3" style="width: 18rem;">
-                                <img class="card-img-top" src="DENZELMANIA" alt="MISSING IMAGE">
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ food.name }}</h5>
-                                    <p class="card-text">{{ food.description }}</p>
-                                    <p class="btn btn-primary">{{ food.price_for_one }}</p>
-                                </div>
+        <div class="container">
+            <div class="row">
+                {% for food in foods %}
+                    <div class="col">
+                        <div class="card mb-3" style="width: 18rem;">
+                            <img class="card-img-top" src="{{ food.image }}" alt="MISSING IMAGE" style="height: 12rem;">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ food.name }}</h5>
+                                <p class="card-text">{{ food.description }}</p>
+                                <p class="btn btn-primary">{{ food.price_for_one }}</p>
+                                <br>
+                                {% if user.role == "owner" %}
+                                    <a class="btn btn-danger" href="{% url "cafe:delete_dish" food.id %}">Delete</a>
+                                {% endif %}
                             </div>
                         </div>
-                    {% endfor %}
-                </div>
+                    </div>
+                {% endfor %}
             </div>
+        </div>
     {% endif %}
 {% endblock %}

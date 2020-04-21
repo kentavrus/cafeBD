@@ -58,7 +58,7 @@ class Product(models.Model):
 
 
 class DishRows(models.Model):
-    dish = models.ForeignKey(Dish, on_delete=models.DO_NOTHING)
+    dish = models.ForeignKey(Dish, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.DO_NOTHING)
     quantity_of_dish = models.FloatField()
     price_for_all_portions = models.FloatField()

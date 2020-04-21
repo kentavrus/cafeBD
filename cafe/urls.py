@@ -34,6 +34,13 @@ urlpatterns = [
     path('add_product/', views.add_product, name='add_product'),
     path('product_add/', views.product_add, name='product_add'),
     path('search_bill/', views.search_bill, name='searchBill'),
+    path('search_product/', views.search_product, name='search_product'),
     path('search_invoices/', views.search_invoices, name='searchInvoices'),
+    path('delete_dish/<int:dish_id>', views.delete_dish, name='delete_dish'),
+    path('sort_bills<int:vector>/', views.sort_bills, name='sort_bills'),
+    path('sort_invoices<int:vector>/', views.sort_invoices, name='sort_invoices'),
+    path('bills_with_foods_drinks/', views.bills_with_foods_drinks, name='bills_with_foods_drinks'),
+    path('quantity_of_bills/', views.quantity_of_bills, name='quantity_of_bills'),
+    path('get_suppliers/', views.get_suppliers, name='get_suppliers'),
 
 ]

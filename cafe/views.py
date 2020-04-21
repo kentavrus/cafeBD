@@ -29,9 +29,10 @@ def index(request):
 def dishes(request):
     try:
         dishes = Dish.objects.all()
+        user = User.objects.get(status=True)
     except:
         raise Http404("Dishes not found")
-    return render(request, 'cafe/owner/dishes_for_owner.html', {"dishes": dishes})
+    return render(request, 'cafe/owner/dishes_for_owner.html', {"dishes": dishes, "user": user})
 
 
 def food(request):
@@ -53,9 +54,10 @@ def drinks(request):
 def products(request):
     try:
         products = Product.objects.all()
+        suppliers = Supplier.objects.all()
     except:
         raise Http404("Products not found")
-    return render(request, 'cafe/owner/products_for_owner.html', {"products": products})
+    return render(request, 'cafe/owner/products_for_owner.html', {"products": products, "suppliers": suppliers})
 
 
 def login(request):
@@ -165,14 +167,14 @@ def bill_add(request):
 
 def bills(request):
     try:
-        bills = Bill.objects.all()
+        bills = Bill.objects.all().order_by("id")
         user = User.objects.get(status=True)
         barists = Barist.objects.all()
         dishes = Dish.objects.all()
     except:
         raise Http404("Bills not found")
     return render(request, "cafe/owner/bills_for_owner.html",
-                  {"bills": bills, "role": user.role, "barists": barists, "dishes": dishes})
+                  {"bills": bills, "role": user.role, "barists": barists, "dishes": dishes, "vector": 0})
 
 
 def bill_detail(request, bill_id):
@@ -250,14 +252,14 @@ def supplier_add(request):
 
 def invoices(request):
     try:
-        invoices = Invoice.objects.all()
+        invoices = Invoice.objects.all().order_by("id")
         user = User.objects.get(status=True)
         suppliers = Supplier.objects.all()
         products = Product.objects.all()
     except:
         raise Http404("Invoices not found")
     return render(request, "cafe/owner/invoices_owner.html",
-                  {"invoices": invoices, "role": user.role, "suppliers": suppliers, "products": products})
+                  {"invoices": invoices, "role": user.role, "suppliers": suppliers, "products": products, "vector": 0})
 
 
 def add_invoice(request):
@@ -357,14 +359,15 @@ def dish_add(request):
     name = request.POST.get('name')
     description = request.POST.get('description')
     type = request.POST.get('dishtype')
+    image = request.POST.get("image")
     notes = request.POST.get('notes')
     try:
         dish_last = Dish.objects.all().last()
         dish = Dish.objects.create(id=dish_last.id + 1, name=name, description=description, type_of_dish=type,
-                                   notes=notes)
+                                   notes=notes, image=image)
     except:
         dish = Dish.objects.create(id=0, name=name, description=description, type_of_dish=type,
-                                   notes=notes)
+                                   notes=notes, image=image)
 
     dishproduct1 = request.POST.get('dishproduct1')
     if dishproduct1 is not None:
@@ -443,4 +446,106 @@ def search_invoices(request):
     except:
         raise Http404("Invoices not found")
     return render(request, "cafe/owner/invoices_owner.html",
-                  {"invoices": invoices, "role": user.role, "suppliers": suppliers, "products": products})
+                  {"invoices": invoices, "role": user.role, "suppliers": suppliers, "products": products, "vector": 0})
+
+
+def delete_dish(request, dish_id):
+    dish = Dish.objects.get(id=dish_id)
+    dish.delete()
+    return redirect("/dishes")
+
+
+def sort_bills(request, vector):
+    try:
+        user = User.objects.get(status=True)
+        barists = Barist.objects.all()
+        dishes = Dish.objects.all()
+        if vector == 1:
+            return redirect("/bills")
+        else:
+            bills = Bill.objects.all().order_by("-datetime")
+            return render(request, "cafe/owner/bills_for_owner.html",
+                          {"bills": bills, "role": user.role, "barists": barists, "dishes": dishes, "vector": 1})
+    except:
+        raise Http404("Bills not found")
+
+
+def sort_invoices(request, vector):
+    try:
+        user = User.objects.get(status=True)
+        suppliers = Supplier.objects.all()
+        products = Product.objects.all()
+        if vector == 1:
+            return redirect("/invoices")
+        else:
+            invoices = Invoice.objects.all().order_by("-date")
+            return render(request, "cafe/owner/invoices_owner.html",
+                          {"invoices": invoices, "role": user.role, "suppliers": suppliers, "products": products,
+                           "vector": 1})
+    except:
+        raise Http404("Invoices not found")
+
+
+def search_product(request):
+    price = request.POST.get("selectPrice")
+    date = request.POST.get("selectDate")
+    date_array = date.split("-")
+    supplier_id = request.POST.get("selectSupplier")
+    funct = request.POST.get("selectFunc")
+    suppliers = Supplier.objects.all()
+    if funct == "<":
+        product = Product.objects.filter(price_for_kg__lte=price, invoicerows__invoice__date__day=date_array[2],
+                                         invoicerows__invoice__date__year=date[0],
+                                         invoicerows__invoice__date__month=date[1],
+                                         invoicerows__invoice__supplier__id=supplier_id)
+    elif funct == ">":
+        product = Product.objects.filter(price_for_kg__gte=price, invoicerows__invoice__date__day=date_array[2],
+                                         invoicerows__invoice__date__year=date_array[0],
+                                         invoicerows__invoice__date__month=date_array[1],
+                                         invoicerows__invoice__supplier__id=supplier_id)
+    return render(request, "cafe/owner/products_for_owner.html", {"products": product, "suppliers": suppliers})
+
+
+def bills_with_foods_drinks(request):
+    try:
+        bills = Bill.objects.filter(billrows__dish__type_of_dish="food").filter(billrows__dish__type_of_dish="drink")
+        user = User.objects.get(status=True)
+        barists = Barist.objects.all()
+        dishes = Dish.objects.all()
+    except:
+        raise Http404("Bills not found")
+    return render(request, "cafe/owner/bills_for_owner.html",
+                  {"bills": bills, "role": user.role, "barists": barists, "dishes": dishes, "vector": 0})
+
+
+def quantity_of_bills(request):
+    barist_id = request.POST.get("selectBarist")
+    date = request.POST.get("selectDate")
+    print(date)
+    user = User.objects.get(status=True)
+    barists = Barist.objects.all()
+    dishes = Dish.objects.all()
+    if date == "":
+        bills_count = Bill.objects.filter(barist_id=barist_id).count()
+    else:
+        date_array = date.split("-")
+        print(date_array)
+        bills_count = Bill.objects.filter(barist_id=barist_id, datetime__day=[2], datetime__month=date_array[1],
+                                          datetime__year=date_array[0]).count()
+    barist = Barist.objects.get(ipn=barist_id)
+    barist_count = {"barist": barist, "bills_count": bills_count}
+    print(barist_count)
+    return render(request, "cafe/owner/bills_for_owner.html",
+                  {"bills": bills, "role": user.role, "barists": barists, "dishes": dishes, "vector": 0,
+                   "barist_count": barist_count})
+
+
+def get_suppliers(request):
+    supplier_id = request.POST.get("selectSupplier")
+    s = Supplier.objects.get(id=supplier_id)
+    sup =  Supplier.objects.raw("SELECT S.id, S.name FROM cafe_supplier AS S WHERE S.name <> '" + s.name + "' AND NOT EXISTS (SELECT * FROM cafe_invoicerows CNS WHERE CNS.product_id IN (SELECT product_id FROM cafe_invoicerows cns WHERE invoice_id IN (SELECT id FROM cafe_invoice WHERE supplier_id IN (SELECT id FROM cafe_supplier WHERE name = '" + s.name + "'))) AND NOT EXISTS (SELECT * FROM cafe_invoicerows CNS2 WHERE CNS2.product_id = CNS.product_id AND CNS2.product_id IN (SELECT cns2.product_id FROM cafe_invoicerows cns2 WHERE cns2.invoice_id IN  (SELECT cn.id FROM cafe_invoice cn WHERE cn.supplier_id = S.id)) ));")
+    suppliers = []
+    for i in sup:
+        suppliers.append(Supplier.objects.get(id=i.id))
+    print(suppliers)
+    return render(request, 'cafe/owner/suppliers_for_owner.html', {"suppliers": suppliers})

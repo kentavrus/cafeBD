@@ -9,16 +9,18 @@
 {% endblock %}
 
 {% block content %}
+    {% if user.role == "owner" %}
     <div class="text-left py-3">
         <a class="btn btn-primary" href="{% url "cafe:add_dish" %}">Add new dish</a>
     </div>
+    {% endif %}
     {% if dishes %}
             <div class="container">
                 <div class="row">
                     {% for dish in dishes %}
                         <div class = "col">
                             <div class="card mb-3" style="width: 18rem;">
-                                <img class="card-img-top" src="{{dish.image}}" alt="MISSING IMAGE">
+                                <img class="card-img-top" src="{{dish.image}}" alt="MISSING IMAGE" style="height: 12rem;">
                                 {# короче ебать, мы вчера такой стих охуевший придумали #}
                                 {# зубы в сале, земля под ногами, вперед мусульмане, здоровья маме! #}
                                 {# така вот кухня, оцени по 10 балке #}
@@ -26,6 +28,10 @@
                                     <h5 class="card-title">{{ dish.name }}</h5>
                                     <p class="card-text">{{ dish.description }}</p>
                                     <p class="btn btn-primary">{{ dish.price_for_one }}</p>
+                                    <br>
+                                    {% if user.role == "owner" %}
+                                    <a class="btn btn-danger" href="{% url "cafe:delete_dish" dish.id %}">Delete</a>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>

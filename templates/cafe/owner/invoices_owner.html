@@ -47,7 +47,14 @@
         <thead>
         <tr>
             <th scope="col">ID</th>
-            <th scope="col">Datetime</th>
+            <th scope="col"><a href="{% url "cafe:sort_invoices" vector %}" id="sort_invoices"
+                               style="color: black">Datetime<span>
+                {% if vector == 0 %}
+                    &#9660;
+                    {% else %}
+                    &#9650;
+                {% endif %}
+            </span></a></th>
             <th scope="col">Supplier name</th>
             <th scope="col">Quantity</th>
             <th scope="col">Sum</th>
