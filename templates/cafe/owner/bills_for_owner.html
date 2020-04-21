@@ -29,7 +29,7 @@
                         <select name="selectBarist" class="selectpicker form-control">
                             <option value="?" disabled selected>Choose barist</option>
                             {% for barist in barists %}
-                                <option value="{{ barist.ipn }}">{{ barist.name }}</option>
+                                <option value="{{ barist.ipn }}">{{ barist.surname }}</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -60,7 +60,7 @@
                 <select name="selectBarist" class="selectpicker form-control">
                     <option value="?" disabled selected>Choose barist</option>
                     {% for barist in barists %}
-                        <option value="{{ barist.ipn }}">{{ barist.name }}</option>
+                        <option value="{{ barist.ipn }}">{{ barist.surname }}</option>
                     {% endfor %}
                 </select>
                 <input type="submit" class="form-control btn btn-primary" value="Quantity of bills and barista">
@@ -105,7 +105,7 @@
                 <tr>
                     <th scope="row">{{ bill.id }}</th>
                     <td>{{ bill.datetime }}</td>
-                    <td>{{ bill.barist_name }}</td>
+                    <td>{{ bill.barist.surname }}</td>
                     <td><a href="{% url "cafe:bill_detail" bill.id %}" class="btn btn-primary">Print</a></td>
                 </tr>
             {% endfor %}

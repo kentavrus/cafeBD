@@ -5,31 +5,40 @@
 {% endblock %}
 
 {% block lists %}
-   {% include "cafe/owner/navigation_owner.html" %}
+    {% if user.role == "owner" %}
+        {% include "cafe/owner/navigation_owner.html" %}
+    {% endif %}
+    {% if user.role == "barista" %}
+        {% include "cafe/owner/navigation_barista.html" %}
+    {% endif %}
+    {% if user.role == "admin" %}
+        {% include "cafe/owner/navigation_admin.html" %}
+    {% endif %}
 {% endblock %}
 
 {% block content %}
     {% if drinks %}
         <p></p>
-            <div class="container">
-                <div class="row">
-                    {% for drink in drinks %}
-                        <div class = "col">
-                            <div class="card mb-3" style="width: 18rem;">
-                                <img class="card-img-top" src="{{ drink.image }}" alt="MISSING IMAGE" style="height: 12rem;">
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ drink.name }}</h5>
-                                    <p class="card-text">{{ drink.description }}</p>
-                                    <p class="btn btn-primary">{{ drink.price_for_one }}</p>
-                                    {% if user.role == "owner" %}
-                                        <br>
-                                    <a class="btn btn-danger" href="{% url "cafe:delete_dish" drinks.id %}">Delete</a>
-                                    {% endif %}
-                                </div>
+        <div class="container">
+            <div class="row">
+                {% for drink in drinks %}
+                    <div class="col">
+                        <div class="card mb-3" style="width: 18rem;">
+                            <img class="card-img-top" src="{{ drink.image }}" alt="MISSING IMAGE"
+                                 style="height: 12rem;">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ drink.name }}</h5>
+                                <p class="card-text">{{ drink.description }}</p>
+                                <p class="btn btn-primary">{{ drink.price_for_one }}</p>
+                                {% if user.role == "owner" %}
+                                    <br>
+                                    <a class="btn btn-danger" href="{% url "cafe:delete_dish" drink.id %}">Delete</a>
+                                {% endif %}
                             </div>
                         </div>
-                    {% endfor %}
-                </div>
+                    </div>
+                {% endfor %}
             </div>
+        </div>
     {% endif %}
 {% endblock %}

@@ -38,17 +38,19 @@ def dishes(request):
 def food(request):
     try:
         foods = Dish.objects.filter(type_of_dish="food")
+        user = User.objects.get(status=True)
     except:
         raise Http404("Foods not found")
-    return render(request, 'cafe/owner/foods_for_owner.html', {"foods": foods})
+    return render(request, 'cafe/owner/foods_for_owner.html', {"foods": foods, "user": user})
 
 
 def drinks(request):
     try:
         drinks = Dish.objects.filter(type_of_dish="drink")
+        user = User.objects.get(status=True)
     except:
         raise Http404("Drinks not found")
-    return render(request, 'cafe/owner/drinks_for_owner.html', {"drinks": drinks})
+    return render(request, 'cafe/owner/drinks_for_owner.html', {"drinks": drinks, "user": user})
 
 
 def products(request):
@@ -427,7 +429,7 @@ def search_bill(request):
     except:
         raise Http404("Bills not found")
     return render(request, "cafe/owner/bills_for_owner.html",
-                  {"bills": bills, "role": user.role, "barists": barists, "dishes": dishes})
+                  {"bills": bills, "role": user.role, "barists": barists, "dishes": dishes, "vector": 0})
 
 
 def search_invoices(request):
@@ -527,10 +529,10 @@ def quantity_of_bills(request):
     dishes = Dish.objects.all()
     if date == "":
         bills_count = Bill.objects.filter(barist_id=barist_id).count()
-    else:
+    elif barist_id != "?":
         date_array = date.split("-")
         print(date_array)
-        bills_count = Bill.objects.filter(barist_id=barist_id, datetime__day=[2], datetime__month=date_array[1],
+        bills_count = Bill.objects.filter(barist_id=barist_id, datetime__day=date_array[2], datetime__month=date_array[1],
                                           datetime__year=date_array[0]).count()
     barist = Barist.objects.get(ipn=barist_id)
     barist_count = {"barist": barist, "bills_count": bills_count}
