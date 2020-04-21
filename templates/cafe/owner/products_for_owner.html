@@ -8,30 +8,36 @@
 {% endblock %}
 
 {% block content %}
-    {% if products %}
-        <div class="py-5">
-            <div class="container">
-                <div class="row">
-                    {% for product in products %}
-                        <div class="col-sm">
-                            <div class="card mb-2" style="width: 18rem; height: 20rem">
-                                <div class="card-body">
-                                    <h1 class="card-title">{{ product.name }}</h1>
-                                    <p class="card-text">{{ product.quantity }}</p>
-                                    <p class="card-text">{{ product.price_for_kg }}</p>
-                                     <details>
-                                        {{ product.notes }}
-                                    </details>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-
-    {% endif %}
-    <div class="text-center">
+    <div class="text-left py-3">
             <a class="btn btn-primary" href="{% url "cafe:add_product" %}">Add new product</a>
-        </div>
+    </div>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Price per kg</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if products %}
+            {% for prod in products %}
+                <tr>
+                    <td>{{ prod.name }}</td>
+                    <td>{{ prod.quantity }}</td>
+                    <td>{{ prod.price_for_kg }}</td>
+                </tr>
+                {% if prod.notes %}
+                <tr>
+                    <td colspan="4"><details><summary>Notes</summary><p>{{ prod.notes }}</p></details></td>
+                </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4">No notes.</td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        </tbody>
+    </table>
 {% endblock %}

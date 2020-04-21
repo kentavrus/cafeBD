@@ -9,31 +9,37 @@
 {% endblock %}
 
 {% block content %}
-    {% if suppliers %}
-        <div class="py-5">
-            <div class="container">
-                <div class="row">
-                    {% for supplier in suppliers %}
-                        <div class="col-sm">
-                            <div class="card mb-2" style="width: 18rem; height: 20rem">
-                                <div class="card-body">
-                                    <h1 class="card-title">{{ supplier.edrpou }}</h1>
-                                    <p class="card-text">{{ supplier.name }}</p>
-                                    <p class="card-text">{{ supplier.address }}</p>
-                                    <p class="card-text">{{ supplier.phone }}</p>
-                                    <p class="card-text">{{ supplier.email }}</p>
-                                    <p class="card-text">{{ supplier.notes }}</p>
-                                    <a href="{% url "cafe:supplier_detail" supplier.edrpou %}"
-                                       class="btn btn-primary">Detail</a>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-    {% endif %}
-    <div class="text-center">
+    <div class="text-left py-3">
             <a class="btn btn-primary" href="{% url "cafe:add_supplier" %}">Add new supplier</a>
-        </div>
+    </div>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Phone</th>
+            <th scope="col">Email</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if suppliers %}
+            {% for supplier in suppliers %}
+                <tr>
+                    <td>{{ supplier.name }}</td>
+                    <td>{{ supplier.phone }}</td>
+                    <td>{{ supplier.email }}</td>
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        <details>
+                            <summary>Details</summary>
+                            <p>EDRPOU: {{ supplier.edrpou }}</p>
+                            <p>Address: {{ supplier.address }}</p>
+                            <p>Notes: {{ supplier.notes }}</p>
+                        </details>
+                    </td>
+                </tr>
+            {% endfor %}
+        {% endif %}
+        </tbody>
+    </table>
 {% endblock %}

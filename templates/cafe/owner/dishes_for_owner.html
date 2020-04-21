@@ -9,30 +9,28 @@
 {% endblock %}
 
 {% block content %}
+    <div class="text-left py-3">
+        <a class="btn btn-primary" href="{% url "cafe:add_dish" %}">Add new dish</a>
+    </div>
     {% if dishes %}
-        <div class="py-5">
             <div class="container">
                 <div class="row">
                     {% for dish in dishes %}
-                        <div class="col-sm">
-                            <div class="card mb-2" style="width: 18rem; height: 20rem">
+                        <div class = "col">
+                            <div class="card mb-3" style="width: 18rem;">
+                                <img class="card-img-top" src="{{dish.image}}" alt="MISSING IMAGE">
+                                {# короче ебать, мы вчера такой стих охуевший придумали #}
+                                {# зубы в сале, земля под ногами, вперед мусульмане, здоровья маме! #}
+                                {# така вот кухня, оцени по 10 балке #}
                                 <div class="card-body">
-                                    <h1 class="card-title">{{ dish.name }}</h1>
-                                    <p class="card-text">{{ dish.price_for_one }}</p>
-                                    <details>
-                                        {{ dish.description }}
-                                        {{ dish.notes }}
-                                    </details>
+                                    <h5 class="card-title">{{ dish.name }}</h5>
+                                    <p class="card-text">{{ dish.description }}</p>
+                                    <p class="btn btn-primary">{{ dish.price_for_one }}</p>
                                 </div>
                             </div>
                         </div>
                     {% endfor %}
                 </div>
             </div>
-        </div>
-
     {% endif %}
-    <div class="text-center">
-        <a class="btn btn-primary" href="{% url "cafe:add_dish" %}">Add new dish</a>
-    </div>
 {% endblock %}

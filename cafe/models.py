@@ -30,14 +30,18 @@ class Dish(models.Model):
     margin = models.FloatField("margin", default=0)
     price_for_one = models.IntegerField("price", default=0)
     notes = models.TextField("notes for dish", blank=True)
+    image = models.TextField(default="")
 
     def __str__(self):
         return "{}".format(self.name)
 
     def save(self, *args, **kwargs):
         dishrows = DishRows.objects.filter(dish=self)
+        print(dishrows)
         for row in dishrows:
+            print(row, row.price_for_all_portions)
             self.price_for_one += int(row.price_for_all_portions)
+            print(self.price_for_one)
         self.margin = self.price_for_one * 0.1
         self.price_for_one += int(self.margin)
         super(Dish, self).save(*args, **kwargs)
@@ -60,7 +64,8 @@ class DishRows(models.Model):
     price_for_all_portions = models.FloatField()
 
     def save(self, *args, **kwargs):
-        self.price_for_all_portions = self.dish.price_for_one * self.quantity_of_dish
+        print(self.product.price_for_kg, self.quantity_of_dish)
+        self.price_for_all_portions = self.product.price_for_kg * self.quantity_of_dish
         super(DishRows, self).save(*args, **kwargs)
 
 

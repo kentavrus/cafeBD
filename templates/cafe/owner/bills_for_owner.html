@@ -17,32 +17,36 @@
 {% endblock %}
 
 {% block content %}
-    <form method="post" action="{% url "cafe:searchBill" %}">
-        {% csrf_token %}
-        <div class="form-row">
-            <div class="form-group">
-                <select name="selectBarist" class="selectpicker form-control">
-                    <option value="?" disabled selected>Choose barist</option>
-                    {% for barist in barists %}
-                        <option value="{{ barist.ipn }}">{{ barist.name }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="form-group">
-                <select name="selectDish" class="selectpicker form-control">
-                    <option value="?" disabled selected>Choose dish</option>
-                    {% for dish in dishes %}
-                        <option value="{{ dish.id }}">{{ dish.name }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="form-group">
-                <button type="submit" class="form-control btn btn-primary">Search</button>
-            </div>
+    <div class="row py-3">
+        <div class="col">
+            <a class="btn btn-primary" href="{% url "cafe:add_bill" %}">Add new bill</a>
         </div>
-    </form>
-    <div class="text-center">
-        <a class="btn btn-primary" href="{% url "cafe:add_bill" %}">Add new bill</a>
+        <div class="col">
+        <form method="post" action="{% url "cafe:searchBill" %}">
+            {% csrf_token %}
+            <div class="form-row">
+                <div class="form-group">
+                    <select name="selectBarist" class="selectpicker form-control">
+                        <option value="?" disabled selected>Choose barist</option>
+                        {% for barist in barists %}
+                            <option value="{{ barist.ipn }}">{{ barist.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select name="selectDish" class="selectpicker form-control">
+                        <option value="?" disabled selected>Choose dish</option>
+                        {% for dish in dishes %}
+                            <option value="{{ dish.id }}">{{ dish.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="form-control btn btn-primary">Search</button>
+                </div>
+            </div>
+        </form>
+        </div>
     </div>
     <table class="table table-striped">
         <thead>

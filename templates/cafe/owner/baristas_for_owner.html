@@ -9,31 +9,39 @@
 {% endblock %}
 
 {% block content %}
-    {% if baristas %}
-        <div class="py-5">
-            <div class="container">
-                <div class="row">
-                    {% for barista in baristas %}
-                        <div class="col-sm">
-                            <div class="card mb-2" style="width: 18rem; height: 20rem">
-                                <div class="card-body">
-                                    <h1 class="card-title">{{ barista.name }} {{ barista.surname }}</h1>
-                                    <details>
-                                        {{ barista.phone }}
-                                        <br>
-                                        {{ barista.email }}
-                                        <br>
-                                        {{ barista.notes }}
-                                    </details>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-        <div class="text-center">
-            <a class="btn btn-primary" href="{% url "cafe:add_barist" %}">Add new barist</a>
-        </div>
-    {% endif %}
+
+    <div class="text-left py-3">
+        <a class="btn btn-primary" href="{% url "cafe:add_barist" %}">Add new barista</a>
+    </div>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Surname</th>
+            <th scope="col">Phone</th>
+            <th scope="col">Email</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if baristas %}
+            {% for barista in baristas %}
+                <tr>
+                    <td>{{ barista.name }}</td>
+                    <td>{{ barista.surname }}</td>
+                    <td>{{ barista.phone }}</td>
+                    <td>{{ barista.email }}</td>
+                </tr>
+                {% if barista.notes %}
+                <tr>
+                    <td colspan="4"><details><summary>Notes</summary><p>{{ barista.notes }}</p></details></td>
+                </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4">No notes.</td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        </tbody>
+    </table>
 {% endblock %}

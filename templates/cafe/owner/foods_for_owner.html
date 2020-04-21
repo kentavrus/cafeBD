@@ -10,26 +10,22 @@
 
 {% block content %}
     {% if foods %}
-        <div class="py-5">
+        <p></p>
             <div class="container">
                 <div class="row">
                     {% for food in foods %}
-                        <div class="col-sm">
-                            <div class="card mb-2" style="width: 18rem; height: 20rem">
+                        <div class = "col">
+                            <div class="card mb-3" style="width: 18rem;">
+                                <img class="card-img-top" src="DENZELMANIA" alt="MISSING IMAGE">
                                 <div class="card-body">
-                                    <h1 class="card-title">{{ food.name }}</h1>
-                                    <p class="card-text">{{ food.price_for_one }}</p>
-                                     <details>
-                                        {{ food.description }}
-                                        {{ food.notes }}
-                                    </details>
+                                    <h5 class="card-title">{{ food.name }}</h5>
+                                    <p class="card-text">{{ food.description }}</p>
+                                    <p class="btn btn-primary">{{ food.price_for_one }}</p>
                                 </div>
                             </div>
                         </div>
                     {% endfor %}
                 </div>
             </div>
-        </div>
-
     {% endif %}
 {% endblock %}

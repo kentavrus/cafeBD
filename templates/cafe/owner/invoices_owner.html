@@ -14,7 +14,11 @@
 {% endblock %}
 
 {% block content %}
-    <form method="post" action="{% url "cafe:searchInvoices" %}">
+    <div class = "row py-3">
+    <div class="col">
+        <a class="btn btn-primary" href="{% url "cafe:add_invoice" %}">Add new invoice</a>
+    </div>
+    <form class="col" method="post" action="{% url "cafe:searchInvoices" %}">
         {% csrf_token %}
         <div class="form-row">
             <div class="form-group">
@@ -38,8 +42,6 @@
             </div>
         </div>
     </form>
-    <div class="text-center">
-        <a class="btn btn-primary" href="{% url "cafe:add_invoice" %}">Add new invoice</a>
     </div>
     <table class="table table-striped">
         <thead>
